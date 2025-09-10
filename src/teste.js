@@ -39,10 +39,42 @@ class AbrigoAnimais {
     }
 
     listaAnimais.sort().forEach(animal => {
-      const brinquedosFavoritos = animais[animal].brinquedos;
-      let pessoaAdotante = null;
+        let pessoaAdotante = null;
 
-      if (animal === 'Loco') {
+        if (animal !== 'Loco') {
+        const brinquedosFavoritos = animais[animal].brinquedos;
+        
+        if (this.verificaBrinquedos(brinquedosPessoa[0], brinquedosFavoritos) && this.verificaOrdem(brinquedosPessoa[0], brinquedosFavoritos) && animaisAdotadosPorPessoa[0] < 3) {
+          if (animais[animal].tipo !== 'gato' || !Object.keys(resultado).some(adotado => {
+            const animalAdotado = adotado;
+            const brinquedosAdotado = animais[animalAdotado].brinquedos;
+            return resultado[animalAdotado] === 'pessoa 1' && brinquedosAdotado.some(brinq => brinquedosFavoritos.includes(brinq));
+          })) {
+            if (!(this.verificaBrinquedos(brinquedosPessoa[1], brinquedosFavoritos) && this.verificaOrdem(brinquedosPessoa[1], brinquedosFavoritos))) {
+              pessoaAdotante = 1;
+            }
+          }
+        } else if (this.verificaBrinquedos(brinquedosPessoa[1], brinquedosFavoritos) && this.verificaOrdem(brinquedosPessoa[1], brinquedosFavoritos) && animaisAdotadosPorPessoa[1] < 3) {
+          if (animais[animal].tipo !== 'gato' || !Object.keys(resultado).some(adotado => {
+            const animalAdotado = adotado;
+            const brinquedosAdotado = animais[animalAdotado].brinquedos;
+            return resultado[animalAdotado] === 'pessoa 2' && brinquedosAdotado.some(brinq => brinquedosFavoritos.includes(brinq));
+          })) {
+            if (!(this.verificaBrinquedos(brinquedosPessoa[0], brinquedosFavoritos) && this.verificaOrdem(brinquedosPessoa[0], brinquedosFavoritos))) {
+              pessoaAdotante = 2;
+            }
+          }
+        }
+        if (pessoaAdotante !== null) {
+        resultado[animal] = `pessoa ${pessoaAdotante}`;
+        animaisAdotadosPorPessoa[pessoaAdotante - 1]++;
+      } else {
+        resultado[animal] = 'abrigo';
+      }
+        
+      }else if (animal === 'Loco') {
+        const brinquedosFavoritos = animais[animal].brinquedos;
+        
         if (animaisAdotadosPorPessoa[0] > 0) {
           if (this.verificaBrinquedos(brinquedosPessoa[0], brinquedosFavoritos) && animaisAdotadosPorPessoa[0] < 3) {
             if (!(this.verificaBrinquedos(brinquedosPessoa[1], brinquedosFavoritos) && animaisAdotadosPorPessoa[1] < 3)) {
@@ -70,35 +102,12 @@ class AbrigoAnimais {
             }
           }
         }
-      } else {
-        if (this.verificaBrinquedos(brinquedosPessoa[0], brinquedosFavoritos) && this.verificaOrdem(brinquedosPessoa[0], brinquedosFavoritos) && animaisAdotadosPorPessoa[0] < 3) {
-          if (animais[animal].tipo !== 'gato' || !Object.keys(resultado).some(adotado => {
-            const animalAdotado = adotado;
-            const brinquedosAdotado = animais[animalAdotado].brinquedos;
-            return resultado[animalAdotado] === 'pessoa 1' && brinquedosAdotado.some(brinq => brinquedosFavoritos.includes(brinq));
-          })) {
-            if (!(this.verificaBrinquedos(brinquedosPessoa[1], brinquedosFavoritos) && this.verificaOrdem(brinquedosPessoa[1], brinquedosFavoritos))) {
-              pessoaAdotante = 1;
-            }
-          }
-        } else if (this.verificaBrinquedos(brinquedosPessoa[1], brinquedosFavoritos) && this.verificaOrdem(brinquedosPessoa[1], brinquedosFavoritos) && animaisAdotadosPorPessoa[1] < 3) {
-          if (animais[animal].tipo !== 'gato' || !Object.keys(resultado).some(adotado => {
-            const animalAdotado = adotado;
-            const brinquedosAdotado = animais[animalAdotado].brinquedos;
-            return resultado[animalAdotado] === 'pessoa 2' && brinquedosAdotado.some(brinq => brinquedosFavoritos.includes(brinq));
-          })) {
-            if (!(this.verificaBrinquedos(brinquedosPessoa[0], brinquedosFavoritos) && this.verificaOrdem(brinquedosPessoa[0], brinquedosFavoritos))) {
-              pessoaAdotante = 2;
-            }
-          }
-        }
-      }
-
-      if (pessoaAdotante !== null) {
+        if (pessoaAdotante !== null) {
         resultado[animal] = `pessoa ${pessoaAdotante}`;
         animaisAdotadosPorPessoa[pessoaAdotante - 1]++;
       } else {
         resultado[animal] = 'abrigo';
+      }
       }
     });
 
@@ -122,8 +131,8 @@ class AbrigoAnimais {
   }
     
 }
+const abrigo = new AbrigoAnimais();
+const resultado = abrigo.encontraPessoas('RATO,BOLA,SKATE,CAIXA,NOVELO', 'RATO,SKATE,NOVELO,BOLA', 'Bola,Loco');
+console.log(resultado);
 
 // Exemplo de uso
-
-
-export { AbrigoAnimais as AbrigoAnimais };
